@@ -1,5 +1,6 @@
 const fs = require("fs");
 const request = require("request-promise");
+const geolib = require("geolib");
 
 fs.readFile("drivers.json", "utf8", function(error, data) {
   // If the code experiences any errors it will log the error to the console.
@@ -14,6 +15,15 @@ fs.readFile("drivers.json", "utf8", function(error, data) {
 
 calculateDistance = () => {
 // compute distance from various drivers to package
+let driverLocation = {"latitude": 34.048, "longitude": -118.302};
+let shipmentLocation = {"latitude": 34.0375, "longitude": -118.249};
+
+let distance = geolib.getDistance(
+  driverLocation,
+  shipmentLocation
+)
+console.log("shipment is " + distance + " meters away.");
+
 // push to an array & sort array closest to farther
 // output is a sorted array of closest drivers
 }
@@ -42,6 +52,6 @@ dispatchRequest = () => {
 // read drivers.json
 // read shipments.json
 // initiate shipment dispatching process, grab first package
-// calculateDistance(); 
+calculateDistance(); 
 // dispatch to drivers();
 // if no acceptances, dispatch to next driver. 
