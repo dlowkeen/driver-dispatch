@@ -32,14 +32,23 @@ calculateDistance = () => {
             distance: distance
         }
         
+        // push to an array
         driverDistanceArray.push(driverDistanceObject);
     }
-    console.log(driverDistanceArray);
-
-    // push to an array & sort array closest to farther
+    // sort array closest to farther
+    let sortedArr = driverDistanceArray.sort(compare);
+    
     // output is a sorted array of closest drivers
+    console.log(driverDistanceArray);
+    console.log(sortedArr);
 }
 
+// function to compare distances from driver and shipment
+compare = (a, b) => {
+  if (a.distance < b.distance) return -1;
+  if (a.distance > b.distance) return 1;
+  return 0;
+}
 
 dispatchRequest = () => {
     request({
