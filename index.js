@@ -2,37 +2,67 @@ const fs = require("fs");
 const request = require("request-promise");
 const geolib = require("geolib");
 
-fs.readFile("drivers.json", "utf8", function(error, data) {
-  // If the code experiences any errors it will log the error to the console.
-  if (error) {
-    return console.log(error);
-  }
-
-  // We will then print the contents of data
-//   console.log(data);
-  
-});
-
-calculateDistance = () => {
-// compute distance from various drivers to package
-let driverLocation = {"latitude": 34.048, "longitude": -118.302};
-let shipmentLocation = {"latitude": 34.0375, "longitude": -118.249};
-
-let distance = geolib.getDistance(
-  driverLocation,
-  shipmentLocation
-)
-console.log("shipment is " + distance + " meters away.");
-
-// push to an array & sort array closest to farther
-// output is a sorted array of closest drivers
+getDrivers = () => {
+    fs.readFile("drivers.json", "utf8", function(error, data) {
+        // If the code experiences any errors it will log the error to the console.
+        if (error) {
+            return console.log(error);
+        }
+        // We will then print the contents of data
+          console.log(data);
+    });
 }
 
+getShipments = () => {
+    fs.readFile("shipments.json", "utf8", function(error, data) {
+        if (error) {
+            return console.log(error);
+        }
+        // print out contents of data
+        console.log(data);
+    })
+}
 
-dispatchRequest = () => {
+calculateDistance = () => {
+    let driverDistanceArray = [];
+    const drivers = require("./drivers.json");
+    // compute distance from various drivers to package
+    for (let i = 1; i < Object.keys(drivers).length + 1; i++) {
+        let driverLocation = drivers[i].coordinates;
+        let shipmentLocation = {"latitude": 34.0375, "longitude": -118.249};
+    
+        let distance = geolib.getDistance(
+            driverLocation,
+            shipmentLocation
+        )
+        
+        let driverDistanceObject = {
+            driver: [i],
+            distance: distance
+        }
+        
+        // push to an array
+        driverDistanceArray.push(driverDistanceObject);
+    }
+    // console.log("driver distance array", driverDistanceArray);
+
+    // sort array closest to farther
+    let sortedArr = driverDistanceArray.sort(compare);
+    // output is a sorted array of closest drivers
+    console.log("Sorted Array", sortedArr);
+}
+
+// function to compare distances from driver and shipment
+compare = (a, b) => {
+  if (a.distance < b.distance) return -1;
+  if (a.distance > b.distance) return 1;
+  return 0;
+}
+
+dispatchRequest = (driverId) => {
     request({
       method: "POST",
-      uri: "https://backend-programming-challenge.herokuapp.com/driver/3/dispatch",
+      uri: "https://backend-programming-challenge.herokuapp.com/driver/" + driverId + "/dispatch",
       json: true,
       body: {
         "shipmentId​": "2352839523"
@@ -49,9 +79,13 @@ dispatchRequest = () => {
 }
 
 // ******************* Main application
-// read drivers.json
 // read shipments.json
+    getShipments();
+// read drivers.json
+    // getDrivers();
+// nest drivers loop into shipments loop
 // initiate shipment dispatching process, grab first package
-calculateDistance(); 
-// dispatch to drivers();
+    // calculateDistance(); 
+// dispatch to drivers
+    // dispatchRequest();
 // if no acceptances, dispatch to next driver. 
