@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/dlowkeen/driver-dispatch#readme",
   "dependencies": {
+    "geolib": "^2.0.24",
     "request": "^2.85.0",
     "request-promise": "^4.2.2"
   }
