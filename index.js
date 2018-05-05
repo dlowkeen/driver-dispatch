@@ -15,25 +15,29 @@ fs.readFile("drivers.json", "utf8", function(error, data) {
 
 calculateDistance = () => {
     const drivers = require("./drivers.json");
-    console.log(drivers[1].coordinates);
-    console.log(Object.keys(drivers).length);
-  // compute distance from various drivers to package
-  let driverDistanceArray = [];
-  for (let i = 1; i < Object.keys(drivers).length + 1; i++) {
-    console.log("Drivers", drivers[i].coordinates);
-  }
-  console.log(driverDistanceArray);
-  let driverLocation = {"latitude": 34.048, "longitude": -118.302};
-  let shipmentLocation = {"latitude": 34.0375, "longitude": -118.249};
+    // compute distance from various drivers to package
+    let driverDistanceArray = [];
+    for (let i = 1; i < Object.keys(drivers).length + 1; i++) {
+        let driverLocation = drivers[i].coordinates;
+        let shipmentLocation = {"latitude": 34.0375, "longitude": -118.249};
+    
+        let distance = geolib.getDistance(
+            driverLocation,
+            shipmentLocation
+        )
+        console.log("shipment is " + distance + " meters away.");
+        
+        let driverDistanceObject = {
+            driver: [i],
+            distance: distance
+        }
+        
+        driverDistanceArray.push(driverDistanceObject);
+    }
+    console.log(driverDistanceArray);
 
-  let distance = geolib.getDistance(
-    driverLocation,
-    shipmentLocation
-  )
-  console.log("shipment is " + distance + " meters away.");
-
-  // push to an array & sort array closest to farther
-  // output is a sorted array of closest drivers
+    // push to an array & sort array closest to farther
+    // output is a sorted array of closest drivers
 }
 
 
