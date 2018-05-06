@@ -64,13 +64,14 @@ compare = (a, b) => {
 
 dispatchRequest = (driverId) => {
     console.log(driverId);
+    const shipment = {
+        "shipmentId​": "2352839523"
+      }
     request({
       method: "POST",
       uri: "https://backend-programming-challenge.herokuapp.com/driver/" + driverId + "/dispatch",
       json: true,
-      body: {
-        "shipmentId​": "2352839523"
-      },
+      body: shipment,
       headers: {
         "User-Agent": "Bolt Dispatch"
       }
@@ -94,23 +95,30 @@ main = async () => {
     // console.log("Shipments", Object.keys(shipments).length);
     // calculateDistance();
     // console.log("shipments", shipments);
-    // let json = JSON.parse(shipments);
+    let json = JSON.parse(shipments);
     // console.log("json", json.length);
     // console.log(Object.keys(json));
     // console.log(Object.values(json));
     // console.log(Object.keys(Object.values(json)));
     // console.log(Object.keys(Object.values(json)));
-    // for (var shipment in json) {
-    //     console.log("shipment", shipment);
-    //     // console.log("values: " + shipments.key)
-    // }
+    var keys = [];
+    for (let shipment in json) {
+        if (json.hasOwnProperty(shipment)) {
+            keys.push(shipment);
+        } 
+        // console.log("shipment", shipment);
+    }
+    for (var i = 0; i <keys.length; i++) {
+        // console.log(keys[i]);
+        console.log(json[keys[i]].coordinates);
+    }
     // for (let i = 0; i < shipments.length; i++) {
     //   console.log(shipments[i]);
     // }
     // initiate shipment dispatching process, grab first package
         // calculateDistance(); 
     // dispatch to drivers
-        dispatchRequest(2);
+        // dispatchRequest(2);
     // if no acceptances, dispatch to next driver. 
 
 }
