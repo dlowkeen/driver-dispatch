@@ -66,23 +66,31 @@ compare = (a, b) => {
   return 0;
 }
 
-dispatchRequest = (driverId, shipment) => {
+dispatchRequest = (driverId, shipmentId) => {
     return new Promise(function(reject, resolve) {
         console.log(driverId);
-        console.log(shipment);
+        console.log(shipmentId);
         request({
           method: "POST",
           uri: "https://backend-programming-challenge.herokuapp.com/driver/" + driverId + "/dispatch",
           json: true,
-          body: shipment,
+          body: {
+            shipmentId: '​1212423524'
+        },
           headers: {
             "User-Agent": "Bolt Dispatch"
           }
-        }, (error, response, body) => {
-            console.log("Body", body);
-            // if accepted, console.log("Driver __ accepted package __");
-            // else dispatchRequest to new driver
+        }, function(error, data, response, body) {
+            if (error) {
+                reject(error);
+            }
+            resolve(data);
         });
+        // }, (error, response, body) => {
+        //     console.log("Body", body);
+        //     // if accepted, console.log("Driver __ accepted package __");
+        //     // else dispatchRequest to new driver
+        // });
         // .then(console.log, console.log);
     })
 }
@@ -118,6 +126,7 @@ main = async () => {
         // dispatchRequest(closestDriver, shipmentId);
         // if no acceptances, dispatch to next driver. 
     }
+    dispatchRequest(2, 3823958290);
 }
 
 main();
