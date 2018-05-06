@@ -51,7 +51,8 @@ calculateDistance = (pkgLocation) => {
     // sort array closest to farther
     let sortedArr = driverDistanceArray.sort(compare);
     // output is a sorted array of closest drivers
-    console.log("Sorted Array", sortedArr);
+    // console.log("Sorted Array", sortedArr);
+    return sortedArr;
 }
 
 // function to compare distances from driver and shipment
@@ -97,21 +98,18 @@ main = async () => {
         } 
         console.log("shipment", shipment);
     }
-    // loop through keys array to access coordinates
+    // loop through keys array and calculate distance from drivers to each shipment
     for (var i = 0; i <keys.length; i++) {
         console.log(keys[i]);
         let pkgLocation = json[keys[i]].coordinates;
         console.log(pkgLocation);
-        calculateDistance(pkgLocation);
+        let sortedDistanceArr = calculateDistance(pkgLocation);
+        // console.log("sortedDistanceArr", sortedDistanceArr);
+        console.log("closest driver to package " + keys[i] + " is driver " + sortedDistanceArr[0].driver);
     }
-
-    // calculateDistance();
-    // initiate shipment dispatching process, grab first package
-        // calculateDistance(); 
     // dispatch to drivers
         // dispatchRequest(2);
     // if no acceptances, dispatch to next driver. 
-
 }
 
 main();
