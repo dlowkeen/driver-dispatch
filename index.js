@@ -88,33 +88,23 @@ main = async () => {
 
     // read drivers.json
     const drivers = await getDrivers("drivers.json");
-    // console.log(drivers);
     // read shipments.json
     const shipments = await getShipments("shipments.json");
-    // nest drivers loop into shipments loop
-    // console.log("Shipments", Object.keys(shipments).length);
-    // calculateDistance();
-    // console.log("shipments", shipments);
     let json = JSON.parse(shipments);
-    // console.log("json", json.length);
-    // console.log(Object.keys(json));
-    // console.log(Object.values(json));
-    // console.log(Object.keys(Object.values(json)));
-    // console.log(Object.keys(Object.values(json)));
     var keys = [];
     for (let shipment in json) {
         if (json.hasOwnProperty(shipment)) {
             keys.push(shipment);
         } 
-        // console.log("shipment", shipment);
+        console.log("shipment", shipment);
     }
+    // loop through keys array to access coordinates
     for (var i = 0; i <keys.length; i++) {
-        // console.log(keys[i]);
+        console.log(keys[i]);
         console.log(json[keys[i]].coordinates);
     }
-    // for (let i = 0; i < shipments.length; i++) {
-    //   console.log(shipments[i]);
-    // }
+
+    // calculateDistance();
     // initiate shipment dispatching process, grab first package
         // calculateDistance(); 
     // dispatch to drivers
