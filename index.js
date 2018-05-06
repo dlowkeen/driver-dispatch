@@ -27,9 +27,7 @@ getShipments = (fileName) => {
 
 calculateDistance = (shipmentLocation, drivers) => {
     let driverDistanceArray = [];
-    // const drivers = require("./drivers.json");
     // compute distance from various drivers to package
-
     let driversJson = JSON.parse(drivers);
     var keys = [];
     for (let driver in driversJson) {
@@ -78,24 +76,20 @@ dispatchRequest = (driverId, shipmentId) => {
           headers: {
             "User-Agent": "Bolt Dispatch"
           }
-        }, function(error, response, body) {
+        }).then((error, response, body) => {
             if (error) {
                 reject(error);
             }
-            console.log(body.response);
+            // console.log("body", body.response);
+            // console.log("response", response);
+            resolve(body);
         });
-        // }, (error, response, body) => {
-        //     console.log("Body", body);
-        //     // if accepted, console.log("Driver __ accepted package __");
-        //     // else dispatchRequest to new driver
-        // });
-        // .then(console.log, console.log);
-    })
+    });
+    
 }
 
 // ******************* Main application
 main = async () => {
-
     // read drivers.json
     const drivers = await getDrivers("drivers.json");
     // read shipments.json
@@ -116,18 +110,16 @@ main = async () => {
         let shipmentLocation = json[key].coordinates;
         let sortedDistanceArr = calculateDistance(shipmentLocation, drivers);
         
-    // dispatch to drivers
-        sortedDistanceArr.forEach( async sortDistArr => {
+    // dispatch to closest to farthest drivers
+        sortedDistanceArr.forEach(async sortDistArr => {
             let closestDriver = sortDistArr.driver;
             // console.log("closest driver to package " + shipmentId + " is driver " + closestDriver);
-
             let dispatch = await dispatchRequest(closestDriver, parseInt(shipmentId));
+            console.log("dispatch", dispatch);
+            // if no acceptances, dispatch to next driver. 
 
         })
-
-        // if no acceptances, dispatch to next driver. 
     })
-    // dispatchRequest(4, 3823958290);
 }
 
 main();
