@@ -29,10 +29,11 @@ calculateDistance = () => {
     let driverDistanceArray = [];
     const drivers = require("./drivers.json");
     // compute distance from various drivers to package
-    for (let i = 1; i < Object.keys(drivers).length + 1; i++) {
+    console.log(drivers);
+    // console.log(Object.values(drivers));
+    for (let i = 2; i < Object.keys(drivers).length + 1; i++) {
         let driverLocation = drivers[i].coordinates;
         let shipmentLocation = {"latitude": 34.0375, "longitude": -118.249};
-    
         let distance = geolib.getDistance(
             driverLocation,
             shipmentLocation
@@ -51,7 +52,7 @@ calculateDistance = () => {
     // sort array closest to farther
     let sortedArr = driverDistanceArray.sort(compare);
     // output is a sorted array of closest drivers
-    console.log("Sorted Array", sortedArr);
+    // console.log("Sorted Array", sortedArr);
 }
 
 // function to compare distances from driver and shipment
@@ -62,6 +63,7 @@ compare = (a, b) => {
 }
 
 dispatchRequest = (driverId) => {
+    console.log(driverId);
     request({
       method: "POST",
       uri: "https://backend-programming-challenge.herokuapp.com/driver/" + driverId + "/dispatch",
@@ -85,13 +87,30 @@ main = async () => {
 
     // read drivers.json
     const drivers = await getDrivers("drivers.json");
+    // console.log(drivers);
     // read shipments.json
     const shipments = await getShipments("shipments.json");
     // nest drivers loop into shipments loop
+    // console.log("Shipments", Object.keys(shipments).length);
+    // calculateDistance();
+    // console.log("shipments", shipments);
+    // let json = JSON.parse(shipments);
+    // console.log("json", json.length);
+    // console.log(Object.keys(json));
+    // console.log(Object.values(json));
+    // console.log(Object.keys(Object.values(json)));
+    // console.log(Object.keys(Object.values(json)));
+    // for (var shipment in json) {
+    //     console.log("shipment", shipment);
+    //     // console.log("values: " + shipments.key)
+    // }
+    // for (let i = 0; i < shipments.length; i++) {
+    //   console.log(shipments[i]);
+    // }
     // initiate shipment dispatching process, grab first package
         // calculateDistance(); 
     // dispatch to drivers
-        // dispatchRequest(2);
+        dispatchRequest(2);
     // if no acceptances, dispatch to next driver. 
 
 }
