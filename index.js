@@ -62,11 +62,12 @@ compare = (a, b) => {
   return 0;
 }
 
-dispatchRequest = (driverId) => {
+dispatchRequest = (driverId, shipment) => {
     console.log(driverId);
-    const shipment = {
-        "shipmentId​": "2352839523"
-      }
+    console.log(shipment);
+    // const shipment = {
+    //     "shipmentId​": "2352839523"
+    //   }
     request({
       method: "POST",
       uri: "https://backend-programming-challenge.herokuapp.com/driver/" + driverId + "/dispatch",
@@ -90,6 +91,8 @@ main = async () => {
     const drivers = await getDrivers("drivers.json");
     // read shipments.json
     const shipments = await getShipments("shipments.json");
+
+    // iterate through shipments to create more accessible array
     let json = JSON.parse(shipments);
     var keys = [];
     for (let shipment in json) {
@@ -98,18 +101,21 @@ main = async () => {
         } 
         console.log("shipment", shipment);
     }
+
     // loop through keys array and calculate distance from drivers to each shipment
     for (var i = 0; i <keys.length; i++) {
-        console.log(keys[i]);
+        let shipmentId = keys[i];
         let pkgLocation = json[keys[i]].coordinates;
-        console.log(pkgLocation);
+        
         let sortedDistanceArr = calculateDistance(pkgLocation);
         // console.log("sortedDistanceArr", sortedDistanceArr);
-        console.log("closest driver to package " + keys[i] + " is driver " + sortedDistanceArr[0].driver);
+        let closestDriver = sortedDistanceArr[0].driver;
+        console.log("closest driver to package " + shipmentId + " is driver " + closestDriver);
+        
+        // dispatch to drivers
+        // dispatchRequest(closestDriver, shipmentId);
+        // if no acceptances, dispatch to next driver. 
     }
-    // dispatch to drivers
-        // dispatchRequest(2);
-    // if no acceptances, dispatch to next driver. 
 }
 
 main();
