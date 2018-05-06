@@ -63,6 +63,7 @@ compare = (a, b) => {
 }
 
 dispatchRequest = (driverId) => {
+    console.log(driverId);
     request({
       method: "POST",
       uri: "https://backend-programming-challenge.herokuapp.com/driver/" + driverId + "/dispatch",
@@ -92,23 +93,24 @@ main = async () => {
     // nest drivers loop into shipments loop
     // console.log("Shipments", Object.keys(shipments).length);
     // calculateDistance();
-    let json = JSON.parse(shipments);
-    // console.log(json);
+    // console.log("shipments", shipments);
+    // let json = JSON.parse(shipments);
+    // console.log("json", json.length);
     // console.log(Object.keys(json));
     // console.log(Object.values(json));
     // console.log(Object.keys(Object.values(json)));
     // console.log(Object.keys(Object.values(json)));
-    for (var shipment in json) {
-        console.log("shipment", shipment);
-        // console.log("values: " + shipments.key)
-    }
-    // for (let i = 1; i < Object.keys(shipments).length; i++) {
+    // for (var shipment in json) {
+    //     console.log("shipment", shipment);
+    //     // console.log("values: " + shipments.key)
+    // }
+    // for (let i = 0; i < shipments.length; i++) {
     //   console.log(shipments[i]);
     // }
     // initiate shipment dispatching process, grab first package
         // calculateDistance(); 
     // dispatch to drivers
-        // dispatchRequest(2);
+        dispatchRequest(2);
     // if no acceptances, dispatch to next driver. 
 
 }
