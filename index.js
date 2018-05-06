@@ -75,16 +75,16 @@ dispatchRequest = (driverId, shipmentId) => {
           uri: "https://backend-programming-challenge.herokuapp.com/driver/" + driverId + "/dispatch",
           json: true,
           body: {
-            shipmentId: '​1212423524'
+            shipmentId: shipmentId
         },
           headers: {
             "User-Agent": "Bolt Dispatch"
           }
-        }, function(error, data, response, body) {
+        }, function(error, response, body) {
             if (error) {
                 reject(error);
             }
-            resolve(data);
+            console.log(body);
         });
         // }, (error, response, body) => {
         //     console.log("Body", body);
@@ -126,7 +126,7 @@ main = async () => {
         // dispatchRequest(closestDriver, shipmentId);
         // if no acceptances, dispatch to next driver. 
     }
-    dispatchRequest(2, 3823958290);
+    dispatchRequest(4, 3823958290);
 }
 
 main();
