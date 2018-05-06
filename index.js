@@ -86,12 +86,22 @@ main = async () => {
 
     // read drivers.json
     const drivers = await getDrivers("drivers.json");
-    console.log(drivers);
+    // console.log(drivers);
     // read shipments.json
     const shipments = await getShipments("shipments.json");
     // nest drivers loop into shipments loop
     // console.log("Shipments", Object.keys(shipments).length);
-    calculateDistance();
+    // calculateDistance();
+    let json = JSON.parse(shipments);
+    // console.log(json);
+    // console.log(Object.keys(json));
+    // console.log(Object.values(json));
+    // console.log(Object.keys(Object.values(json)));
+    // console.log(Object.keys(Object.values(json)));
+    for (var shipment in json) {
+        console.log("shipment", shipment);
+        // console.log("values: " + shipments.key)
+    }
     // for (let i = 1; i < Object.keys(shipments).length; i++) {
     //   console.log(shipments[i]);
     // }
