@@ -2,14 +2,17 @@ const fs = require("fs");
 const request = require("request-promise");
 const geolib = require("geolib");
 
-getDrivers = () => {
-    fs.readFile("drivers.json", "utf8", function(error, data) {
-        // If the code experiences any errors it will log the error to the console.
-        if (error) {
-            return console.log(error);
-        }
-        // We will then print the contents of data
-          console.log(data);
+getDrivers = (fileName, type) => {
+    return new Promise(function(resolve, reject) {
+        fs.readFile(fileName, "utf8", function(error, data) {
+            // If the code experiences any errors it will log the error to the console.
+            if (error) {
+                reject(error);
+            }
+            resolve(data);
+            // We will then print the contents of data
+        })
+        
     });
 }
 
@@ -78,14 +81,21 @@ dispatchRequest = (driverId) => {
     // .then(console.log, console.log);
 }
 
+main = async () => {
+    const drivers = await getDrivers("drivers.json", "sample");
+    console.log("Drivers", drivers);
+}
+
 // ******************* Main application
 // read shipments.json
-    getShipments();
+    // getShipments();
 // read drivers.json
     // getDrivers();
 // nest drivers loop into shipments loop
 // initiate shipment dispatching process, grab first package
     // calculateDistance(); 
 // dispatch to drivers
-    // dispatchRequest();
+    // dispatchRequest(2);
 // if no acceptances, dispatch to next driver. 
+
+main();
