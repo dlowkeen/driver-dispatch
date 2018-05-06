@@ -25,15 +25,14 @@ getShipments = (fileName) => {
     })
 }
 
-calculateDistance = () => {
+calculateDistance = (pkgLocation) => {
+
     let driverDistanceArray = [];
     const drivers = require("./drivers.json");
     // compute distance from various drivers to package
-    console.log(drivers);
-    // console.log(Object.values(drivers));
     for (let i = 2; i < Object.keys(drivers).length + 1; i++) {
         let driverLocation = drivers[i].coordinates;
-        let shipmentLocation = {"latitude": 34.0375, "longitude": -118.249};
+        let shipmentLocation = pkgLocation;
         let distance = geolib.getDistance(
             driverLocation,
             shipmentLocation
@@ -52,7 +51,7 @@ calculateDistance = () => {
     // sort array closest to farther
     let sortedArr = driverDistanceArray.sort(compare);
     // output is a sorted array of closest drivers
-    // console.log("Sorted Array", sortedArr);
+    console.log("Sorted Array", sortedArr);
 }
 
 // function to compare distances from driver and shipment
@@ -101,7 +100,9 @@ main = async () => {
     // loop through keys array to access coordinates
     for (var i = 0; i <keys.length; i++) {
         console.log(keys[i]);
-        console.log(json[keys[i]].coordinates);
+        let pkgLocation = json[keys[i]].coordinates;
+        console.log(pkgLocation);
+        calculateDistance(pkgLocation);
     }
 
     // calculateDistance();
