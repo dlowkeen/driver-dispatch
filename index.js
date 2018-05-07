@@ -108,16 +108,21 @@ main = async () => {
         let shipmentLocation = json[key].coordinates;
         let sortedDistanceArr = calculateDistance(shipmentLocation, drivers);
     // dispatch to closest to farthest drivers
-        console.log("**************STARTING SORTED DISTANCE ARRAY LOOP");
+        console.log("**************STARTING SORTED DISTANCE ARRAY LOOP", key);
+        let dispatchArr = [];
         sortedDistanceArr.forEach(async sortDistArr => {
+            // console.log("Hello Test");
             let closestDriver = sortDistArr.driver;
-            let dispatch = [];
-            if (dispatch.length < 1) {
+            if (dispatchArr.length < 1) {
                 // console.log("dispatch.respponse", dispatch.response);
                 
                 dispatch = await dispatchRequest(closestDriver, parseInt(shipmentId));
                 console.log("dispatch.response", dispatch.response);
                 console.log("dispatch", dispatch);
+                if (dispatch.response === "Accepted") {
+                    dispatchArr.push(dispatch);
+                }
+                console.log(dispatchArr);
             } else {
                 console.log("Stop function");
             }
