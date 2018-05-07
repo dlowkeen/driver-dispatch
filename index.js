@@ -80,12 +80,10 @@ dispatchRequest = (driverId, shipmentId) => {
             if (error) {
                 reject(error);
             }
-            // console.log("body", body.response);
-            // console.log("response", response);
+            // resolves the message that is sent back from request
             resolve(body);
         });
     });
-    
 }
 
 // ******************* Main application
@@ -103,21 +101,29 @@ main = async () => {
             keys.push(shipment);
         } 
     }
-
+    
     // loop through keys array and calculate distance from drivers to each shipment
     keys.forEach((key) => {
         let shipmentId = key;
         let shipmentLocation = json[key].coordinates;
         let sortedDistanceArr = calculateDistance(shipmentLocation, drivers);
-        
     // dispatch to closest to farthest drivers
+        console.log("**************STARTING SORTED DISTANCE ARRAY LOOP");
         sortedDistanceArr.forEach(async sortDistArr => {
             let closestDriver = sortDistArr.driver;
+            let dispatch = [];
+            if (dispatch.length < 1) {
+                // console.log("dispatch.respponse", dispatch.response);
+                
+                dispatch = await dispatchRequest(closestDriver, parseInt(shipmentId));
+                console.log("dispatch.response", dispatch.response);
+                console.log("dispatch", dispatch);
+            } else {
+                console.log("Stop function");
+            }
             // console.log("closest driver to package " + shipmentId + " is driver " + closestDriver);
-            let dispatch = await dispatchRequest(closestDriver, parseInt(shipmentId));
-            console.log("dispatch", dispatch);
             // if no acceptances, dispatch to next driver. 
-
+            
         })
     })
 }
