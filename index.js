@@ -27,9 +27,7 @@ getShipments = (fileName) => {
 
 calculateDistance = (shipmentLocation, drivers) => {
     let driverDistanceArray = [];
-    // const drivers = require("./drivers.json");
     // compute distance from various drivers to package
-
     let driversJson = JSON.parse(drivers);
     var keys = [];
     for (let driver in driversJson) {
@@ -68,8 +66,6 @@ compare = (a, b) => {
 
 dispatchRequest = (driverId, shipmentId) => {
     return new Promise(function(reject, resolve) {
-        console.log(driverId);
-        console.log(shipmentId);
         request({
           method: "POST",
           uri: "https://backend-programming-challenge.herokuapp.com/driver/" + driverId + "/dispatch",
@@ -80,24 +76,18 @@ dispatchRequest = (driverId, shipmentId) => {
           headers: {
             "User-Agent": "Bolt Dispatch"
           }
-        }, function(error, response, body) {
+        }).then((error, response, body) => {
             if (error) {
                 reject(error);
             }
-            console.log(body);
+            // resolves the message that is sent back from request
+            resolve(body);
         });
-        // }, (error, response, body) => {
-        //     console.log("Body", body);
-        //     // if accepted, console.log("Driver __ accepted package __");
-        //     // else dispatchRequest to new driver
-        // });
-        // .then(console.log, console.log);
-    })
+    });
 }
 
 // ******************* Main application
 main = async () => {
-
     // read drivers.json
     const drivers = await getDrivers("drivers.json");
     // read shipments.json
@@ -105,28 +95,37 @@ main = async () => {
 
     // iterate through shipments to create more accessible array
     let json = JSON.parse(shipments);
-    var keys = [];
+    let keys = [];
     for (let shipment in json) {
         if (json.hasOwnProperty(shipment)) {
             keys.push(shipment);
         } 
     }
-
+    
     // loop through keys array and calculate distance from drivers to each shipment
-    for (var i = 0; i <keys.length; i++) {
-        let shipmentId = keys[i];
-        let shipmentLocation = json[keys[i]].coordinates;
-
+    keys.forEach((key) => {
+        let shipmentId = key;
+        let shipmentLocation = json[key].coordinates;
         let sortedDistanceArr = calculateDistance(shipmentLocation, drivers);
-        // console.log("sortedDistanceArr", sortedDistanceArr);
-        let closestDriver = sortedDistanceArr[0].driver;
-        console.log("closest driver to package " + shipmentId + " is driver " + closestDriver);
-        
-        // dispatch to drivers
-        // dispatchRequest(closestDriver, shipmentId);
-        // if no acceptances, dispatch to next driver. 
-    }
-    dispatchRequest(4, 3823958290);
+    // dispatch to closest to farthest drivers
+        console.log("**************STARTING SORTED DISTANCE ARRAY LOOP");
+        sortedDistanceArr.forEach(async sortDistArr => {
+            let closestDriver = sortDistArr.driver;
+            let dispatch = [];
+            if (dispatch.length < 1) {
+                // console.log("dispatch.respponse", dispatch.response);
+                
+                dispatch = await dispatchRequest(closestDriver, parseInt(shipmentId));
+                console.log("dispatch.response", dispatch.response);
+                console.log("dispatch", dispatch);
+            } else {
+                console.log("Stop function");
+            }
+            // console.log("closest driver to package " + shipmentId + " is driver " + closestDriver);
+            // if no acceptances, dispatch to next driver. 
+            
+        })
+    })
 }
 
 main();
