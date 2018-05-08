@@ -93,30 +93,34 @@ dispatchShipment = async (keys, json, drivers) => {
   let shipmentLocation = json[keys[0]].coordinates;
   let sortedDistanceArr = calculateDistance(shipmentLocation, drivers);
   let closestDriver = sortedDistanceArr[counter].driver;
-  if (dispatchArr.length < 1) {
-    // console.log("dispatch.respponse", dispatch.response);
-    console.log("i got here");
+//   if (dispatchArr.length < 1) {
     dispatch = await dispatchRequest(closestDriver, parseInt(shipmentId));
-    console.log("dispatch.response", dispatch.response);
-    console.log("dispatch", dispatch);
+    // console.log("dispatch.response", dispatch.response);
+    // console.log("dispatch", dispatch);
+    counter += 1;
     if (dispatch.response === "Accepted") {
-      dispatchArr.push(dispatch);
-      console.log(dispatchArr);
-      if (sortedDistanceArr.length > 1) {
-        sortedDistanceArr = sortedDistanceArr.slice(1);
-        keys = keys.slice(1);
-        dispatchShipment(keys, json, drivers);
-      }
-    } else {
-      console.log(dispatchArr);
       counter++;
+      console.log("counter", counter);
+      dispatchArr.push(dispatch);
+      console.log("dispatchArr IF BLOCK", dispatchArr);
+    //   if (sortedDistanceArr.length > 1) {
+    //     sortedDistanceArr = sortedDistanceArr.slice(1);
+    //     keys = keys.slice(1);
+    //     dispatchShipment(keys, json, drivers);
+    //   }
+    } else {
+      counter++;
+      console.log("counter", counter);
+      console.log("dispatchArr ELSE BLOCK", dispatchArr);
       dispatchShipment(keys, json, drivers);
     }
-  } else {
-    counter++;
-    dispatchShipment(keys, json, drivers);
-    console.log("Stop function");
-  }
+//   } else {
+//     counter++;
+//     dispatchShipment(keys, json, drivers);
+//     console.log("Stop function");
+//     console.log("counter", counter);
+//     console.log(keys, json, drivers);
+//   }
 };
 
 // ******************* Main application
