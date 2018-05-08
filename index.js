@@ -3,115 +3,120 @@ const request = require("request-promise");
 const geolib = require("geolib");
 // counter for dispatchShipment function
 // TO-DO: remove counter and pass to function as a parameter
-let counter = 19;
+let counter = 0;
 
 getDrivers = fileName => {
-  return new Promise(function(resolve, reject) {
-    fs.readFile(fileName, "utf8", function(error, data) {
-      // If the code experiences any errors it will log the error to the console.
-      if (error) {
-        reject(error);
-      }
-      resolve(data);
+    return new Promise(function(resolve, reject) {
+        fs.readFile(fileName, "utf8", function(error, data) {
+            // If the code experiences any errors it will log the error to the console.
+            if (error) {
+                reject(error);
+            }
+            resolve(data);
+        });
     });
-  });
 };
 
 getShipments = fileName => {
-  return new Promise(function(resolve, reject) {
-    fs.readFile(fileName, "utf8", function(error, data) {
-      if (error) {
-        reject(error);
-      }
-      resolve(data);
+    return new Promise(function(resolve, reject) {
+        fs.readFile(fileName, "utf8", function(error, data) {
+            if (error) {
+                reject(error);
+            }
+            resolve(data);
+        });
     });
-  });
 };
 
 calculateDistance = (shipmentLocation, drivers) => {
-  let driverDistanceArray = [];
-  // compute distance from various drivers to package
-  let driversJson = JSON.parse(drivers);
-  var keys = [];
-  for (let driver in driversJson) {
-    if (driversJson.hasOwnProperty(driver)) {
-      keys.push(driver);
+    let driverDistanceArray = [];
+    // compute distance from various drivers to package
+    let driversJson = JSON.parse(drivers);
+    var keys = [];
+    for (let driver in driversJson) {
+        if (driversJson.hasOwnProperty(driver)) {
+            keys.push(driver);
+        }
     }
-  }
-  for (var i = 0; i < keys.length; i++) {
-    let driverId = keys[i];
-    let driverLocation = driversJson[keys[i]].coordinates;
-    let distance = geolib.getDistance(driverLocation, shipmentLocation);
-    let driverDistanceObject = {
-      driver: driverId,
-      distance: distance
-    };
-    // push to an array
-    driverDistanceArray.push(driverDistanceObject);
-  }
-  // sort array closest to farther
-  let sortedArr = driverDistanceArray.sort(compare);
-  // output is a sorted array of closest drivers
-  return sortedArr;
+    for (var i = 0; i < keys.length; i++) {
+        let driverId = keys[i];
+        let driverLocation = driversJson[keys[i]].coordinates;
+        let distance = geolib.getDistance(driverLocation, shipmentLocation);
+        let driverDistanceObject = {
+            driver: driverId,
+            distance: distance
+        };
+        // push to an array
+        driverDistanceArray.push(driverDistanceObject);
+    }
+    // sort array closest to farther
+    let sortedArr = driverDistanceArray.sort(compare);
+    // output is a sorted array of closest drivers
+    return sortedArr;
 };
 
 // helper function to compare distances from driver and shipment
 compare = (a, b) => {
-  if (a.distance < b.distance) return -1;
-  if (a.distance > b.distance) return 1;
-  return 0;
+    if (a.distance < b.distance) return -1;
+    if (a.distance > b.distance) return 1;
+    return 0;
 };
 
 dispatchRequest = (driverId, shipmentId) => {
-  return new Promise(function(reject, resolve) {
-    request({
-      method: "POST",
-      uri:
-        "https://backend-programming-challenge.herokuapp.com/driver/" +
-        driverId +
-        "/dispatch",
-      json: true,
-      body: {
-        shipmentId: shipmentId
-      },
-      headers: {
-        "User-Agent": "Bolt Dispatch"
-      }
-    }).then((error, response, body) => {
-      if (error) {
-        reject(error);
-      }
-      // resolves the message that is sent back from request
-      resolve(body);
+    return new Promise(function(reject, resolve) {
+        request({
+            method: "POST",
+            uri:
+            "https://backend-programming-challenge.herokuapp.com/driver/" +
+            driverId +
+            "/dispatch",
+            json: true,
+            body: {
+                shipmentId: shipmentId
+            },
+            headers: {
+                "User-Agent": "Bolt Dispatch"
+            }
+        }).then((error, response, body) => {
+            if (error) {
+                reject(error);
+            }
+            // resolves the message that is sent back from request
+            resolve(body);
+        });
     });
-  });
 };
 
 dispatchShipment = async (keys, json, drivers) => {
-  let dispatchArr = [];
-  let shipmentId = keys[0];
-  let shipmentLocation = json[keys[0]].coordinates;
-  let sortedDistanceArr = calculateDistance(shipmentLocation, drivers);
+    // console.log("keys", keys);
+    // console.log("keys[0]", keys[0])
+    let shipmentId = keys[0];
+    let shipmentLocation = json[keys[0]].coordinates;
+    let sortedDistanceArr = calculateDistance(shipmentLocation, drivers);
   let closestDriver = sortedDistanceArr[counter].driver;
-    dispatch = await dispatchRequest(closestDriver, parseInt(shipmentId));
-    // console.log("dispatch.response", dispatch.response);
-    // console.log("dispatch", dispatch);
-    if (dispatch.response === "Accepted") {
-        dispatchArr.push(dispatch);
-        console.log("dispatchArr IF BLOCK", dispatchArr);
-        console.log("sortedDistanceArr", sortedDistanceArr);
-        // sortedDistanceArr = sortedDistanceArr.slice(1);
-        keys = keys.slice(1);
-        console.log("shipments", keys);
-        counter = 0;
-        console.log("counter", counter);
-        dispatchShipment(keys, json, drivers);
-    } else {
-      counter++;
-      console.log("counter", counter);
-      console.log("driverId " + closestDriver + " Denied package request");
-      dispatchShipment(keys, json, drivers);
-    }
+  // dispatch package to closest driver
+  dispatch = await dispatchRequest(closestDriver, parseInt(shipmentId));
+  // console.log("dispatch.response", dispatch.response);
+  // console.log("dispatch", dispatch);
+  if (dispatch.response === "Accepted") {
+    console.log("DriverId " + closestDriver + " has " + dispatch.response + " the package.");
+    // remove package that has already been dispatched
+    keys = keys.slice(1);
+    console.log("Remaining shipments", keys);
+    // set counter to zero and begin dispatch process again
+    counter = 0;
+    console.log("counter", counter);
+    dispatchShipment(keys, json, drivers);
+  } else {
+    counter++;
+    console.log("counter", counter);
+    console.log("driverId " + closestDriver + " Denied package request");
+    dispatchShipment(keys, json, drivers);
+  }
+  if (sortedDistanceArr.length == counter) {
+    console.log("All drivers denied package");
+    // TO-DO: MUST add statement in case all drivers reject package. 
+  }
 };
 
 // ******************* Main application
