@@ -1,6 +1,9 @@
 const fs = require("fs");
 const request = require("request-promise");
 const geolib = require("geolib");
+// counter for dispatchShipment function
+// TO-DO: remove counter and pass to function as a parameter
+let counter = 19;
 
 getDrivers = fileName => {
   return new Promise(function(resolve, reject) {
@@ -46,11 +49,9 @@ calculateDistance = (shipmentLocation, drivers) => {
     // push to an array
     driverDistanceArray.push(driverDistanceObject);
   }
-  // console.log("driver distance array", driverDistanceArray);
   // sort array closest to farther
   let sortedArr = driverDistanceArray.sort(compare);
   // output is a sorted array of closest drivers
-  // console.log("Sorted Array", sortedArr);
   return sortedArr;
 };
 
@@ -86,7 +87,6 @@ dispatchRequest = (driverId, shipmentId) => {
   });
 };
 
-let counter = 0;
 dispatchShipment = async (keys, json, drivers) => {
   let dispatchArr = [];
   let shipmentId = keys[0];
@@ -97,19 +97,19 @@ dispatchShipment = async (keys, json, drivers) => {
     // console.log("dispatch.response", dispatch.response);
     // console.log("dispatch", dispatch);
     if (dispatch.response === "Accepted") {
-      counter = 0;
-      console.log("counter", counter);
-      dispatchArr.push(dispatch);
-      console.log("dispatchArr IF BLOCK", dispatchArr);
-      console.log("sortedDistanceArr", sortedDistanceArr);
+        dispatchArr.push(dispatch);
+        console.log("dispatchArr IF BLOCK", dispatchArr);
+        console.log("sortedDistanceArr", sortedDistanceArr);
         // sortedDistanceArr = sortedDistanceArr.slice(1);
         keys = keys.slice(1);
         console.log("shipments", keys);
+        counter = 0;
+        console.log("counter", counter);
         dispatchShipment(keys, json, drivers);
     } else {
       counter++;
       console.log("counter", counter);
-      console.log("dispatchArr ELSE BLOCK", dispatchArr);
+      console.log("driverId " + closestDriver + " Denied package request");
       dispatchShipment(keys, json, drivers);
     }
 };
