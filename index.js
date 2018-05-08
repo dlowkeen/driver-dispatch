@@ -97,15 +97,15 @@ dispatchShipment = async (keys, json, drivers) => {
     // console.log("dispatch.response", dispatch.response);
     // console.log("dispatch", dispatch);
     if (dispatch.response === "Accepted") {
-      counter++;
+      counter = 0;
       console.log("counter", counter);
       dispatchArr.push(dispatch);
       console.log("dispatchArr IF BLOCK", dispatchArr);
-    //   if (sortedDistanceArr.length > 1) {
-    //     sortedDistanceArr = sortedDistanceArr.slice(1);
-    //     keys = keys.slice(1);
-    //     dispatchShipment(keys, json, drivers);
-    //   }
+      console.log("sortedDistanceArr", sortedDistanceArr);
+        // sortedDistanceArr = sortedDistanceArr.slice(1);
+        keys = keys.slice(1);
+        console.log("shipments", keys);
+        dispatchShipment(keys, json, drivers);
     } else {
       counter++;
       console.log("counter", counter);
@@ -128,35 +128,8 @@ main = async () => {
       keys.push(shipment);
     }
   }
+  // recursive function that iterates over keys and drivers 
   dispatchShipment(keys, json, drivers);
-  // loop through keys array and calculate distance from drivers to each shipment
-  // keys.forEach(async key => {
-  //  let shipmentId = key;
-  //  let shipmentLocation = json[key].coordinates;
-  //  let sortedDistanceArr = calculateDistance(shipmentLocation, drivers);
-  //  // dispatch to closest to farthest drivers
-  //  console.log("**************STARTING SORTED DISTANCE ARRAY LOOP", key);
-  //  let dispatchArr = [];
-  //  sortedDistanceArr.forEach(async sortDistArr => {
-  //      // console.log("Hello Test");
-  //      let closestDriver = sortDistArr.driver;
-  //      if (dispatchArr.length < 1) {
-  //          // console.log("dispatch.respponse", dispatch.response);
-  //          console.log('i got here');
-  //          dispatch = await dispatchRequest(closestDriver, parseInt(shipmentId));
-  //          console.log("dispatch.response", dispatch.response);
-  //          console.log("dispatch", dispatch);
-  //          if (dispatch.response === "Accepted") {
-  //              dispatchArr.push(dispatch);
-  //          }
-  //          console.log(dispatchArr);
-  //      } else {
-  //          console.log("Stop function");
-  //      }
-  //      // console.log("closest driver to package " + shipmentId + " is driver " + closestDriver);
-  //      // if no acceptances, dispatch to next driver.
-  //  })
-  // })
 };
 
 main();
