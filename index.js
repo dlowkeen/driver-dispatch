@@ -86,18 +86,16 @@ dispatchRequest = (driverId, shipmentId) => {
   });
 };
 
+let counter = 0;
 dispatchShipment = async (keys, json, drivers) => {
   let dispatchArr = [];
-  let counter = 0;
   let shipmentId = keys[0];
   let shipmentLocation = json[keys[0]].coordinates;
   let sortedDistanceArr = calculateDistance(shipmentLocation, drivers);
   let closestDriver = sortedDistanceArr[counter].driver;
-//   if (dispatchArr.length < 1) {
     dispatch = await dispatchRequest(closestDriver, parseInt(shipmentId));
     // console.log("dispatch.response", dispatch.response);
     // console.log("dispatch", dispatch);
-    counter += 1;
     if (dispatch.response === "Accepted") {
       counter++;
       console.log("counter", counter);
@@ -114,13 +112,6 @@ dispatchShipment = async (keys, json, drivers) => {
       console.log("dispatchArr ELSE BLOCK", dispatchArr);
       dispatchShipment(keys, json, drivers);
     }
-//   } else {
-//     counter++;
-//     dispatchShipment(keys, json, drivers);
-//     console.log("Stop function");
-//     console.log("counter", counter);
-//     console.log(keys, json, drivers);
-//   }
 };
 
 // ******************* Main application
