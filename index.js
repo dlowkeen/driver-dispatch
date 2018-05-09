@@ -114,6 +114,7 @@ dispatchShipment = async (keys, json, drivers) => {
       console.log("driverId " + closestDriver + " Denied package request");
       let mod = await modulusChecker(counter);
       console.log("mod", mod);
+      console.log("HEEEEEEEYYYYYYYY WE GOT PAST THE MODULUS CHECKER");
       dispatchShipment(keys, json, drivers);
   }
   if (sortedDistanceArr.length == counter) {
@@ -128,18 +129,14 @@ modulusChecker = (counter) => {
   return new Promise(function(resolve, reject) {
     let modulus = counter % 3;
     console.log("modulus", modulus);
-    console.log("************************* Currently getting stuck here");
-    if (modulus == 0) {
+    console.log("Waiting to dispatch to next available drivers");
+    if (modulus == 2) {
       setTimeout(() => {
-        console.log("Test************");
-      }, 2000);
+        resolve("Beginning Dispatch");
+      }, 3000);
+    } else {
+      console.log("Dispatching Next Driver");
     }
-  }).then((error, data) => {
-    if (error) {
-      reject(error);
-    }
-    // resolves the message that is sent back from request
-    resolve(body);
   });
 }
 
