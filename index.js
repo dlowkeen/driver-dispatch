@@ -88,6 +88,10 @@ dispatchRequest = (driverId, shipmentId) => {
 };
 
 dispatchShipment = async (keys, json, drivers) => {
+    console.log("\n" + 
+        " **************************** STARTING NEW DISPATCH ****************************" + "\n", 
+        "*******************************************************************************"
+    );
   // console.log("keys", keys);
   // console.log("keys[0]", keys[0])
   let shipmentId = keys[0];
@@ -100,17 +104,17 @@ dispatchShipment = async (keys, json, drivers) => {
   // console.log("dispatch.response", dispatch.response);
   // console.log("dispatch", dispatch);
   if (dispatch.response === "Accepted") {
-      console.log("DriverId " + closestDriver + " has " + dispatch.response + " the package.");
+      console.log("DriverId " + closestDriver + " has " + dispatch.response + " package " + shipmentId);
       // remove package that has already been dispatched
       keys = keys.slice(1);
       console.log("Remaining shipments", keys);
       // set counter to zero and begin dispatch process again
       counter = 0;
-      console.log("counter", counter);
+    //   console.log("counter", counter);
       dispatchShipment(keys, json, drivers);
     } else {
       counter++;
-      console.log("counter", counter);
+    //   console.log("counter", counter);
       console.log("driverId " + closestDriver + " Denied package request");
       let mod = await modulusChecker(counter, keys, json, drivers);
     //   console.log("mod", mod);
@@ -128,7 +132,7 @@ dispatchShipment = async (keys, json, drivers) => {
 modulusChecker = (counter, keys, json, drivers) => {
   return new Promise(function(resolve, reject) {
     let modulus = counter % 3;
-    console.log("modulus", modulus);
+    // console.log("modulus", modulus);
     console.log("Waiting to dispatch to next available drivers");
     if (modulus == 0) {
       setTimeout(() => {
