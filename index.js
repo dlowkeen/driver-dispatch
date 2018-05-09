@@ -88,36 +88,55 @@ dispatchRequest = (driverId, shipmentId) => {
 };
 
 dispatchShipment = async (keys, json, drivers) => {
-    // console.log("keys", keys);
-    // console.log("keys[0]", keys[0])
-    let shipmentId = keys[0];
-    let shipmentLocation = json[keys[0]].coordinates;
-    let sortedDistanceArr = calculateDistance(shipmentLocation, drivers);
+  // console.log("keys", keys);
+  // console.log("keys[0]", keys[0])
+  let shipmentId = keys[0];
+  let shipmentLocation = json[keys[0]].coordinates;
+  let sortedDistanceArr = calculateDistance(shipmentLocation, drivers);
   let closestDriver = sortedDistanceArr[counter].driver;
   // dispatch package to closest driver
+  //   setTimeout((dispatchRequest), 1500, closestDriver, parseInt(shipmentId));
   dispatch = await dispatchRequest(closestDriver, parseInt(shipmentId));
   // console.log("dispatch.response", dispatch.response);
   // console.log("dispatch", dispatch);
   if (dispatch.response === "Accepted") {
-    console.log("DriverId " + closestDriver + " has " + dispatch.response + " the package.");
-    // remove package that has already been dispatched
-    keys = keys.slice(1);
-    console.log("Remaining shipments", keys);
-    // set counter to zero and begin dispatch process again
-    counter = 0;
-    console.log("counter", counter);
-    dispatchShipment(keys, json, drivers);
-  } else {
-    counter++;
-    console.log("counter", counter);
-    console.log("driverId " + closestDriver + " Denied package request");
-    dispatchShipment(keys, json, drivers);
+      console.log("DriverId " + closestDriver + " has " + dispatch.response + " the package.");
+      // remove package that has already been dispatched
+      keys = keys.slice(1);
+      console.log("Remaining shipments", keys);
+      // set counter to zero and begin dispatch process again
+      counter = 0;
+      console.log("counter", counter);
+      dispatchShipment(keys, json, drivers);
+    } else {
+      counter++;
+      console.log("counter", counter);
+      modulusChecker(counter).then(function(done) {
+        console.log(done);
+      });
+      console.log("driverId " + closestDriver + " Denied package request");
+      dispatchShipment(keys, json, drivers);
   }
   if (sortedDistanceArr.length == counter) {
-    console.log("All drivers denied package");
-    // TO-DO: MUST add statement in case all drivers reject package. 
+      console.log("All drivers denied package " + shipmentId);
+      // remove shipment from list of available shipments   
+      keys = keys.slice(1);
+      dispatchShipment(keys, json, drivers);
   }
 };
+
+modulusChecker = (counter) => {
+  let promise = new Promise(function(resolve, reject) {
+      let modulus = counter % 3;
+      console.log("modulus", modulus);
+      if (modulus == 0) {
+        setTimeout(() => {
+          resolve("******************* WAITING ******************");
+        }, 2000);
+      }
+  });
+  return promise;
+}
 
 // ******************* Main application
 main = async () => {
@@ -133,6 +152,7 @@ main = async () => {
       keys.push(shipment);
     }
   }
+  
   // recursive function that iterates over keys and drivers 
   dispatchShipment(keys, json, drivers);
 };
