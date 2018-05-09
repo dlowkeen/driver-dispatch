@@ -89,84 +89,84 @@ dispatchRequest = (driverId, shipmentId) => {
 
 dispatchShipment = async (keys, json, drivers) => {
     if (keys.length == 0) {
-      // end function
-      return;
+        // end function
+        return;
     }
     console.log("\n" + 
         " **************************** STARTING NEW DISPATCH ****************************" + "\n", 
         "*******************************************************************************"
     );
-  // console.log("keys", keys);
-  // console.log("keys[0]", keys[0])
-  let shipmentId = keys[0];
-  let shipmentLocation = json[keys[0]].coordinates;
-  let sortedDistanceArr = calculateDistance(shipmentLocation, drivers);
-  let closestDriver = sortedDistanceArr[counter].driver;
-  // dispatch package to closest driver
-  //   setTimeout((dispatchRequest), 1500, closestDriver, parseInt(shipmentId));
-  dispatch = await dispatchRequest(closestDriver, parseInt(shipmentId));
-  // console.log("dispatch.response", dispatch.response);
-  // console.log("dispatch", dispatch);
-  if (dispatch.response === "Accepted") {
-      console.log("DriverId " + closestDriver + " has " + dispatch.response + " package " + shipmentId);
-      // remove package that has already been dispatched
-      keys = keys.slice(1);
-      console.log("Remaining shipments", keys);
-      // set counter to zero and begin dispatch process again
-      counter = 0;
-    //   console.log("counter", counter);
-      dispatchShipment(keys, json, drivers);
+    // console.log("keys", keys);
+    // console.log("keys[0]", keys[0])
+    let shipmentId = keys[0];
+    let shipmentLocation = json[keys[0]].coordinates;
+    let sortedDistanceArr = calculateDistance(shipmentLocation, drivers);
+    let closestDriver = sortedDistanceArr[counter].driver;
+    // dispatch package to closest driver
+    //   setTimeout((dispatchRequest), 1500, closestDriver, parseInt(shipmentId));
+    dispatch = await dispatchRequest(closestDriver, parseInt(shipmentId));
+    // console.log("dispatch.response", dispatch.response);
+    // console.log("dispatch", dispatch);
+    if (dispatch.response === "Accepted") {
+        console.log("DriverId " + closestDriver + " has " + dispatch.response + " package " + shipmentId);
+        // remove package that has already been dispatched
+        keys = keys.slice(1);
+        console.log("Remaining shipments", keys);
+        // set counter to zero and begin dispatch process again
+        counter = 0;
+         //   console.log("counter", counter);
+        dispatchShipment(keys, json, drivers);
     } else {
-      counter++;
-    //   console.log("counter", counter);
-      console.log("driverId " + closestDriver + " Denied package request");
-      let mod = await modulusChecker(counter, keys, json, drivers);
-    //   console.log("mod", mod);
-      console.log("Thank you for waiting 10 seconds while we dispatch to the next driver");
-      dispatchShipment(keys, json, drivers);
-  }
-  if (sortedDistanceArr.length == counter) {
-      console.log("All drivers denied package " + shipmentId);
-      // remove shipment from list of available shipments   
-      keys = keys.slice(1);
-      dispatchShipment(keys, json, drivers);
-  }
+        counter++;
+        //   console.log("counter", counter);
+        console.log("driverId " + closestDriver + " Denied package request");
+        let mod = await modulusChecker(counter, keys, json, drivers);
+        //   console.log("mod", mod);
+        console.log("Thank you for waiting 10 seconds while we dispatch to the next driver");
+        dispatchShipment(keys, json, drivers);
+    }
+    if (sortedDistanceArr.length == counter) {
+        console.log("All drivers denied package " + shipmentId);
+        // remove shipment from list of available shipments   
+        keys = keys.slice(1);
+        dispatchShipment(keys, json, drivers);
+    }
 };
 
 // after every 3 dispatches wait 10 seconds before dispatching to next 3 drivers
 modulusChecker = (counter, keys, json, drivers) => {
-  return new Promise(function(resolve, reject) {
-    let modulus = counter % 3;
-    // console.log("modulus", modulus);
-    console.log("Waiting to dispatch to next available drivers");
-    if (modulus == 0) {
-      setTimeout(() => {
-        resolve("Beginning Dispatch");
-      }, 10000);
-    } else {
-      console.log("Dispatching Next Driver");
-      dispatchShipment(keys, json, drivers);
-    }
-  });
+    return new Promise(function(resolve, reject) {
+        let modulus = counter % 3;
+        // console.log("modulus", modulus);
+        console.log("Waiting to dispatch to next available drivers");
+        if (modulus == 0) {
+            setTimeout(() => {
+                resolve("Beginning Dispatch");
+            }, 10000);
+        } else {
+            console.log("Dispatching Next Driver");
+            dispatchShipment(keys, json, drivers);
+        }
+    });
 };
 
 // ******************* Main application
 main = async () => {
-  // read drivers.json
-  const drivers = await getDrivers("drivers.json");
-  // read shipments.json
-  const shipments = await getShipments("shipments.json");
-  // iterate through shipments to create more accessible array
-  let json = JSON.parse(shipments);
-  let keys = [];
-  for (let shipment in json) {
-    if (json.hasOwnProperty(shipment)) {
-      keys.push(shipment);
+    // read drivers.json
+    const drivers = await getDrivers("drivers.json");
+    // read shipments.json
+    const shipments = await getShipments("shipments.json");
+    // iterate through shipments to create more accessible array
+    let json = JSON.parse(shipments);
+    let keys = [];
+    for (let shipment in json) {
+        if (json.hasOwnProperty(shipment)) {
+            keys.push(shipment);
+        }
     }
-  }
   
-  // recursive function that iterates over keys and drivers 
-  dispatchShipment(keys, json, drivers);
+    // recursive function that iterates over keys and drivers 
+    dispatchShipment(keys, json, drivers);
 };
 
 // Execute Main function
