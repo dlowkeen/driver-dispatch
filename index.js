@@ -133,6 +133,7 @@ dispatchShipment = async (keys, json, drivers) => {
   }
 };
 
+// after every 3 dispatches wait 10 seconds before dispatching to next 3 drivers
 modulusChecker = (counter, keys, json, drivers) => {
   return new Promise(function(resolve, reject) {
     let modulus = counter % 3;
@@ -141,7 +142,7 @@ modulusChecker = (counter, keys, json, drivers) => {
     if (modulus == 0) {
       setTimeout(() => {
         resolve("Beginning Dispatch");
-      }, 8000);
+      }, 10000);
     } else {
       console.log("Dispatching Next Driver");
       dispatchShipment(keys, json, drivers);
