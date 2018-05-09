@@ -88,6 +88,10 @@ dispatchRequest = (driverId, shipmentId) => {
 };
 
 dispatchShipment = async (keys, json, drivers) => {
+    if (keys.length == 0) {
+      // end function
+      return;
+    }
     console.log("\n" + 
         " **************************** STARTING NEW DISPATCH ****************************" + "\n", 
         "*******************************************************************************"
@@ -164,4 +168,5 @@ main = async () => {
   dispatchShipment(keys, json, drivers);
 };
 
+// Execute Main function
 main();
