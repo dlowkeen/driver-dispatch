@@ -16,6 +16,9 @@ You are given the following:
 In the command line, type `npm install` to download node packages. Go to package.json file to view dependencies.
 Type `node index.js` to initiate application.
 
+### Testing
+In the command line, type `npm test`
+
 ## Built With
 
 * [Node.js](https://nodejs.org/en/) 
