@@ -8,6 +8,10 @@ You are given the following:
 - JSON file representing a list of 5 active shipments and their pickup locations
 - shipmentId is the key of each JSON object (65289023243, 3823958290...)
 
+## Live Demo of Solution
+<img src="https://github.com/dlowkeen/driver-dispatch/master/assets/out.gif?raw=true" width="70%" height="70%">
+
+
 ### Prerequisites
 
 * Node.js
