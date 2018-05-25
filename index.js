@@ -142,7 +142,7 @@ modulusChecker = (counter, keys, json, drivers) => {
         if (modulus == 0) {
             setTimeout(() => {
                 resolve("Beginning Dispatch");
-            }, 10000);
+            }, 2000);
         } else {
             console.log("Dispatching Next Driver");
             dispatchShipment(keys, json, drivers);
