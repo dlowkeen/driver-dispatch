@@ -9,7 +9,7 @@ You are given the following:
 - shipmentId is the key of each JSON object (65289023243, 3823958290...)
 
 ## Live Demo of Solution
-<img src="https://github.com/dlowkeen/driver-dispatch/assets/out.gif?raw=true" width="70%" height="70%">
+<img src="https://github.com/dlowkeen/driver-dispatch/assets/out.gif" width="70%" height="70%">
 
 
 ### Prerequisites
